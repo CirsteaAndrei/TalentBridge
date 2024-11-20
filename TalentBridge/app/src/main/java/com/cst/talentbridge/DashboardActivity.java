@@ -16,7 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -30,6 +32,7 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
 
         // Initialize Bottom Navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -70,6 +73,73 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
     }
+
+    private void seedJobsAndSkillsToFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // List of predefined skills
+        List<String> predefinedSkills = List.of(
+                "HTML", "CSS", "JavaScript", "React", "Java", "Python", "SQL",
+                "Photoshop", "Illustrator", "Creativity", "R", "Machine Learning", "Pandas"
+        );
+
+        // List of predefined jobs
+        List<Map<String, Object>> jobs = new ArrayList<>();
+
+        jobs.add(createJob("Frontend Developer Intern",
+                "Assist in designing and developing responsive web applications using React and CSS. Work closely with the UX/UI team.",
+                List.of("HTML", "CSS", "JavaScript", "React")));
+
+        jobs.add(createJob("Backend Developer Intern",
+                "Work on building and maintaining APIs and database management systems. Collaborate with the frontend team.",
+                List.of("Java", "Python", "SQL")));
+
+        jobs.add(createJob("Graphic Design Intern",
+                "Create engaging visual content for marketing and branding campaigns. Use tools like Adobe Photoshop and Illustrator.",
+                List.of("Photoshop", "Illustrator", "Creativity")));
+
+        jobs.add(createJob("Data Scientist Intern",
+                "Analyze large datasets to extract insights and create predictive models. Present findings to the team.",
+                List.of("Python", "R", "Machine Learning", "Pandas")));
+
+        // Seed skills
+        for (String skill : predefinedSkills) {
+            db.collection("skills")
+                    .document(skill) // Use skill name as document ID
+                    .set(createSkill(skill))
+                    .addOnSuccessListener(aVoid ->
+                            Log.d("SeedSkills", "Skill added: " + skill))
+                    .addOnFailureListener(e ->
+                            Log.w("SeedSkills", "Error adding skill", e));
+        }
+
+        // Seed jobs
+        for (Map<String, Object> job : jobs) {
+            db.collection("jobs")
+                    .add(job)
+                    .addOnSuccessListener(documentReference ->
+                            Log.d("SeedJobs", "Job added with ID: " + documentReference.getId()))
+                    .addOnFailureListener(e ->
+                            Log.w("SeedJobs", "Error adding job", e));
+        }
+    }
+
+    // Helper method to create a job map
+    private Map<String, Object> createJob(String title, String description, List<String> requiredSkills) {
+        Map<String, Object> job = new HashMap<>();
+        job.put("title", title);
+        job.put("description", description);
+        job.put("requiredSkills", requiredSkills);
+        return job;
+    }
+
+    // Helper method to create a skill map
+    private Map<String, Object> createSkill(String name) {
+        Map<String, Object> skill = new HashMap<>();
+        skill.put("name", name);
+        return skill;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -130,4 +200,5 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
     }
+
 }
