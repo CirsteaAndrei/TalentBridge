@@ -3,6 +3,7 @@ package com.cst.talentbridge;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -38,6 +39,11 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             }
             return false;
+        });
+        ImageButton statisticsButton = findViewById(R.id.statisticsButton);
+        statisticsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardActivity.this, StatisticsActivity.class);
+            startActivity(intent);
         });
 
         // Initialize RecyclerView
