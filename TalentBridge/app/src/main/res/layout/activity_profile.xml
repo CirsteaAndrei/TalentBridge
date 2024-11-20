@@ -11,6 +11,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+    <Button
+        android:id="@+id/editSkillsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Skills" />
+</LinearLayout>
         <!-- Profile Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -26,6 +33,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@color/white">
+
                 android:gravity="center_horizontal">
 
                 <!-- Student Name -->
@@ -68,7 +78,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingBottom="16dp"
+            />
             android:paddingBottom="16dp" />
+
 
         <!-- Edit Skills Button -->
         <com.google.android.material.button.MaterialButton
@@ -78,7 +91,10 @@
             android:text="Edit Skills"
             android:backgroundTint="@color/blue_500"
             android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
+           android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
