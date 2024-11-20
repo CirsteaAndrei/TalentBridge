@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +15,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -28,14 +28,12 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        // Initialize Bottom Navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_dashboard) {
-                // Stay on Dashboard
                 return true;
             } else if (item.getItemId() == R.id.nav_profile) {
-                // Navigate to Profile
                 startActivity(new Intent(DashboardActivity.this, ProfileActivity.class));
                 return true;
             }
@@ -45,13 +43,12 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         jobAdapter = new JobAdapter(this, jobList);
         recyclerView.setAdapter(jobAdapter);
 
-        // Initialize Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         // Fetch jobs from Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("jobs")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -60,6 +57,9 @@ public class DashboardActivity extends AppCompatActivity {
                             String title = document.getString("title");
                             String description = document.getString("description");
                             List<String> requiredSkills = (List<String>) document.get("requiredSkills");
+
+                            // Add job to the list
+                            jobList.add(new Job(title, description, requiredSkills));
                         }
                         jobAdapter.notifyDataSetChanged(); // Notify adapter about data changes
                     } else {
