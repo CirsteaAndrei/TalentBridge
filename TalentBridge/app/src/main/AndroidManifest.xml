@@ -9,12 +9,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TalentBridge"> <!-- Ensure this theme is AppCompat-based -->
+        android:theme="@style/Theme.TalentBridge"> <!-- Updated to MaterialComponents theme -->
 
-        <activity android:name=".DashboardActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".LoginActivity"
-            android:exported="true">
+        <!-- Main Activity (Launcher) -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TalentBridge">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,4 +25,8 @@
         <activity android:name=".ProfileActivity" />
     </application>
 
+        <activity android:name=".DashboardActivity" android:theme="@style/Theme.TalentBridge" />
+        <activity android:name=".SignupActivity" android:theme="@style/Theme.TalentBridge" />
+        <activity android:name=".JobDetailsActivity" android:theme="@style/Theme.TalentBridge" />
+    </application>
 </manifest>
