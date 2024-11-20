@@ -1,5 +1,6 @@
 package com.cst.talentbridge;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -7,11 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -24,6 +27,20 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_dashboard) {
+                // Stay on Dashboard
+                return true;
+            } else if (item.getItemId() == R.id.nav_profile) {
+                // Navigate to Profile
+                startActivity(new Intent(DashboardActivity.this, ProfileActivity.class));
+                return true;
+            }
+            return false;
+        });
 
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
@@ -42,7 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String title = document.getString("title");
                             String description = document.getString("description");
-                            jobList.add(new Job(title, description));
+                            List<String> requiredSkills = (List<String>) document.get("requiredSkills");
                         }
                         jobAdapter.notifyDataSetChanged(); // Notify adapter about data changes
                     } else {

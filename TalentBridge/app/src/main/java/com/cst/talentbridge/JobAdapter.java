@@ -34,6 +34,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         Job job = jobList.get(position);
         holder.jobTitle.setText(job.getTitle());
         holder.jobDescription.setText(job.getDescription());
+        holder.jobRequiredSkills.setText("Skills: " + String.join(", ", job.getRequiredSkills()));
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, JobDetailsActivity.class);
@@ -49,12 +50,13 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     }
 
     public static class JobViewHolder extends RecyclerView.ViewHolder {
-        TextView jobTitle, jobDescription;
+        TextView jobTitle, jobDescription, jobRequiredSkills;
 
         public JobViewHolder(@NonNull View itemView) {
             super(itemView);
             jobTitle = itemView.findViewById(R.id.jobTitle);
             jobDescription = itemView.findViewById(R.id.jobDescription);
+            jobRequiredSkills = itemView.findViewById(R.id.jobRequiredSkills);
         }
     }
 }
