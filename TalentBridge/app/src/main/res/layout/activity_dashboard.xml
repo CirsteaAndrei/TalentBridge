@@ -27,6 +27,7 @@
             android:id="@+id/statisticsButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_marginLeft="180dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/stats_icon"
             android:contentDescription="Statistics"

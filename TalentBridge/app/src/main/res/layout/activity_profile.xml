@@ -1,38 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/studentName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="John Doe"
-        android:textSize="20sp"
-        android:paddingBottom="8dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skills" />
-
     <LinearLayout
-        android:id="@+id/skillsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical">
 
-<<<<<<< Updated upstream
+
     <Button
         android:id="@+id/editSkillsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit Skills" />
 </LinearLayout>
-=======
         <!-- Profile Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -50,6 +35,8 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:background="@color/white">
+
+                android:gravity="center_horizontal">
 
                 <!-- Student Name -->
                 <TextView
@@ -93,6 +80,8 @@
             android:orientation="vertical"
             android:paddingBottom="16dp"
             />
+            android:paddingBottom="16dp" />
+
 
         <!-- Edit Skills Button -->
         <com.google.android.material.button.MaterialButton
@@ -102,7 +91,15 @@
             android:text="Edit Skills"
             android:backgroundTint="@color/blue_500"
             android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
+           android:layout_marginTop="16dp" />
     </LinearLayout>
 </ScrollView>
->>>>>>> Stashed changes
+
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/bottom_nav_menu" />
+    </LinearLayout>
+</ScrollView>
