@@ -8,58 +8,43 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PieChartView extends View {
 
-    private List<Slice> slices = new ArrayList<>();
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private RectF rectF = new RectF();
+    private float[] values;
+    private int[] colors;
+    private String[] labels;
+    private Paint paint;
+    private Paint textPaint;
+    private RectF rectF;
 
     public PieChartView(Context context) {
         super(context);
+        init();
     }
 
     public PieChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public PieChartView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
-    /**
-     * Sets the data for the pie chart.
-     * Clears existing slices and adds new slices based on the provided values and colors.
-     *
-     * @param values Array of slice values.
-     * @param colors Array of slice colors.
-     * @param labels Array of slice labels.
-     */
+    private void init() {
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(30);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        rectF = new RectF();
+    }
+
     public void setData(float[] values, int[] colors, String[] labels) {
-        if (values.length != colors.length || values.length != labels.length) {
-            throw new IllegalArgumentException("Values, colors, and labels arrays must have the same length");
-        }
-
-        slices.clear(); // Clear existing slices
-
-        for (int i = 0; i < values.length; i++) {
-            slices.add(new Slice((int) values[i], colors[i], labels[i]));
-        }
-
-        invalidate(); // Redraw the view
-    }
-
-    // Add a slice to the pie chart
-    public void addSlice(int value, int color, String label) {
-        slices.add(new Slice(value, color, label));
-        invalidate(); // Redraw the view
-    }
-
-    // Clear all slices
-    public void clearSlices() {
-        slices.clear();
+        this.values = values;
+        this.colors = colors;
+        this.labels = labels;
         invalidate(); // Redraw the view
     }
 
@@ -67,67 +52,56 @@ public class PieChartView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (slices.isEmpty()) return;
+        if (values == null || colors == null || labels == null || values.length != colors.length) {
+            return; // Skip drawing if data is invalid
+        }
 
         int width = getWidth();
         int height = getHeight();
-        int size = Math.min(width, height);
-        int padding = 20;
+        int size = Math.min(width, height) - 200; // Leave space for the legend
+        rectF.set(50, 100, size + 50, size + 100); // Shift pie chart down for the legend
 
-        // Define the pie chart area
-        rectF.set(padding, padding, size - padding, size - padding);
-
-        // Calculate total value of slices
-        int total = 0;
-        for (Slice slice : slices) {
-            total += slice.value;
+        float total = 0;
+        for (float value : values) {
+            total += value;
         }
 
-        // Draw each slice
         float startAngle = 0;
-        for (Slice slice : slices) {
-            float sweepAngle = (slice.value / (float) total) * 360;
-
-            // Draw slice
-            paint.setColor(slice.color);
+        for (int i = 0; i < values.length; i++) {
+            float sweepAngle = (values[i] / total) * 360;
+            paint.setColor(colors[i]);
             canvas.drawArc(rectF, startAngle, sweepAngle, true, paint);
+
+            // Draw the number on the slice
+            float angle = startAngle + sweepAngle / 2;
+            float x = (float) (rectF.centerX() + (rectF.width() / 3) * Math.cos(Math.toRadians(angle)));
+            float y = (float) (rectF.centerY() + (rectF.height() / 3) * Math.sin(Math.toRadians(angle)));
+            textPaint.setColor(Color.WHITE);
+            canvas.drawText(String.valueOf((int) values[i]), x, y, textPaint);
 
             startAngle += sweepAngle;
         }
 
-        // Optional: Draw labels
-        drawLabels(canvas, width, height);
+        // Draw the legend on top of the chart
+        drawLegend(canvas, width);
     }
 
-    private void drawLabels(Canvas canvas, int width, int height) {
-        int legendX = 50; // X coordinate for labels
-        int legendY = 20; // Starting Y coordinate for labels
-        int lineHeight = 40; // Space between labels
+    private void drawLegend(Canvas canvas, int width) {
+        int legendLeft = 50; // Start of the legend
+        int legendTop = 20; // Position above the chart
+        int boxSize = 40; // Size of the color box
+        int spacing = 20; // Space between legend items
 
-        for (Slice slice : slices) {
-            // Draw legend color box
-            paint.setColor(slice.color);
-            canvas.drawRect(legendX, legendY, legendX + 30, legendY + 30, paint);
+        for (int i = 0; i < labels.length; i++) {
+            // Draw the color box
+            paint.setColor(colors[i]);
+            canvas.drawRect(legendLeft, legendTop, legendLeft + boxSize, legendTop + boxSize, paint);
 
-            // Draw legend text
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(30);
-            canvas.drawText(slice.label + " (" + slice.value + ")", legendX + 40, legendY + 25, paint);
+            // Draw the label next to the box
+            textPaint.setColor(Color.BLACK);
+            canvas.drawText(labels[i], legendLeft + boxSize + spacing, legendTop + boxSize - 10, textPaint);
 
-            legendY += lineHeight; // Move to the next label position
-        }
-    }
-
-    // Helper class to represent a slice
-    private static class Slice {
-        int value;
-        int color;
-        String label;
-
-        public Slice(int value, int color, String label) {
-            this.value = value;
-            this.color = color;
-            this.label = label;
+            legendLeft += 200; // Move to the next label position
         }
     }
 }
