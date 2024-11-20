@@ -1,5 +1,6 @@
 package com.cst.talentbridge;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -52,6 +54,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Edit skills button click
         editSkillsButton.setOnClickListener(v -> showSkillEditingDialog(userId));
+
+        // Handle navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_dashboard) {
+                startActivity(new Intent(this, DashboardActivity.class));
+                return true;
+            } else if (item.getItemId() == R.id.nav_profile) {
+                return true; // Stay on ProfileActivity
+            }
+            return false;
+        });
     }
     private void loadProfileData(String userId) {
         db.collection("students").document(userId).get().addOnSuccessListener(documentSnapshot -> {
