@@ -1,30 +1,57 @@
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/light_gray"
+    android:clickable="true"
+    android:focusable="true"> <!-- Ensure the card view is focusable and clickable -->
 
-    <TextView
-        android:id="@+id/jobTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Job Title"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/light_gray">
 
-    <TextView
-        android:id="@+id/jobDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Job Description"
-        android:textSize="14sp" />
+        <!-- Job Title -->
+        <TextView
+            android:id="@+id/jobTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Job Title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="8dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
-    <TextView
-        android:id="@+id/jobRequiredSkills"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skills: Java, Android"
-        android:textSize="14sp"
-        android:paddingTop="4dp" />
-</LinearLayout>
+        <!-- Job Description -->
+        <TextView
+            android:id="@+id/jobDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a detailed description of the job position, highlighting the responsibilities and expectations."
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:paddingBottom="8dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+        <!-- Required Skills -->
+        <TextView
+            android:id="@+id/jobRequiredSkills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Java, Android, Kotlin"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

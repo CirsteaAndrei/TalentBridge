@@ -1,24 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/jobTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Job Title"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/jobDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Job Description"
-        android:textSize="16sp" />
-</LinearLayout>
+        <!-- Job Title -->
+        <TextView
+            android:id="@+id/jobTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Job Title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="16dp" />
+
+        <!-- Job Description Section -->
+        <TextView
+            android:id="@+id/jobDescriptionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Job Description:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/jobDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a detailed description of the job position, responsibilities, and expectations."
+            android:textSize="16sp"
+            android:textColor="@color/gray"
+            android:paddingBottom="16dp" />
+
+        <!-- Required Skills Section -->
+        <TextView
+            android:id="@+id/jobRequiredSkillsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Required Skills:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/jobRequiredSkills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Java, Android, Kotlin"
+            android:textSize="16sp"
+            android:textColor="@color/gray"
+            android:paddingBottom="16dp" />
+
+        <!-- Apply Now Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/applyButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apply Now"
+            android:backgroundTint="@color/blue_500"
+            android:textColor="@color/white"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>
