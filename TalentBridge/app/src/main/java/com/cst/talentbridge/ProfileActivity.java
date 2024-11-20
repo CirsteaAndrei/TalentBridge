@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -40,15 +41,41 @@ public class ProfileActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // Load profile data (mock for now)
-        studentName.setText("John Doe");
-        selectedSkills.add("Java"); // Example of user's current skills
+        // Get current user's ID from Firebase Auth
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Load profile data from Firestore
+        loadProfileData(userId);
 
         // Load predefined skills from Firestore
         loadSkillsFromFirestore();
 
         // Edit skills button click
-        editSkillsButton.setOnClickListener(v -> showSkillEditingDialog());
+        editSkillsButton.setOnClickListener(v -> showSkillEditingDialog(userId));
+    }
+    private void loadProfileData(String userId) {
+        db.collection("students").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Retrieve and display student data
+                String name = documentSnapshot.getString("name");
+                List<String> skills = (List<String>) documentSnapshot.get("skills");
+
+                if (name != null) {
+                    studentName.setText(name);
+                }
+
+                if (skills != null) {
+                    selectedSkills.clear();
+                    selectedSkills.addAll(skills);
+                    displaySkills();
+                }
+            } else {
+                Toast.makeText(this, "Profile not found", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
+            Log.e("ProfileActivity", "Error loading profile", e);
+        });
     }
     private void loadSkillsFromFirestore() {
         db.collection("skills").get().addOnCompleteListener(task -> {
@@ -80,8 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void showSkillEditingDialog() {
-        // Create a dialog for editing skills
+    private void showSkillEditingDialog(String userId) {
         LinearLayout dialogLayout = new LinearLayout(this);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -105,7 +131,17 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                     displaySkills();
-                    Toast.makeText(this, "Skills updated", Toast.LENGTH_SHORT).show();
+
+                    // Save updated skills to Firestore
+                    db.collection("students").document(userId)
+                            .update("skills", selectedSkills)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "Skills updated", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to update skills", Toast.LENGTH_SHORT).show();
+                                Log.e("ProfileActivity", "Error updating skills", e);
+                            });
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
