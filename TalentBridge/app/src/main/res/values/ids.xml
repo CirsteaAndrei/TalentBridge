@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="welcomeText" type="id"></item>
+    <item name="appLogo" type="id" />
+    <item name="appName" type="id"></item>
+    <item name="appSubtitle" type="id"></item>
+    <item name="signupRedirect" type="id" />
+</resources>
