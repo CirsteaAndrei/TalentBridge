@@ -1,0 +1,64 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Full Name Field -->
+    <EditText
+        android:id="@+id/fullNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:inputType="textPersonName" />
+
+    <!-- Email Field -->
+    <EditText
+        android:id="@+id/emailField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
+
+    <!-- Password Field -->
+    <EditText
+        android:id="@+id/passwordField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <!-- Skills Field -->
+    <EditText
+        android:id="@+id/skillsField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Skills (comma-separated)"
+        android:inputType="text" />
+
+    <!-- University Field -->
+    <EditText
+        android:id="@+id/universityField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="University"
+        android:inputType="text" />
+
+    <!-- Faculty Field -->
+    <EditText
+        android:id="@+id/facultyField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Faculty"
+        android:inputType="text" />
+
+    <!-- Sign Up Button -->
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
