@@ -1,8 +1,8 @@
 package com.cst.talentbridge;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,15 +20,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
 
+    private TextView studentName;
     private LinearLayout skillsContainer;
+    private Button editSkillsButton;
     private FirebaseFirestore db;
 
     private List<String> predefinedSkills = new ArrayList<>();
@@ -39,7 +38,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        studentName = findViewById(R.id.studentName);
         skillsContainer = findViewById(R.id.skillsContainer);
+        editSkillsButton = findViewById(R.id.editSkillsButton);
+
         db = FirebaseFirestore.getInstance();
 
         // Get current user's ID from Firebase Auth
@@ -53,18 +55,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Edit skills button click
         editSkillsButton.setOnClickListener(v -> showSkillEditingDialog(userId));
-
-        // Handle navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_dashboard) {
-                startActivity(new Intent(this, DashboardActivity.class));
-                return true;
-            } else if (item.getItemId() == R.id.nav_profile) {
-                return true; // Stay on ProfileActivity
-            }
-            return false;
-        });
     }
     private void loadProfileData(String userId) {
         db.collection("students").document(userId).get().addOnSuccessListener(documentSnapshot -> {
@@ -112,67 +102,15 @@ public class ProfileActivity extends AppCompatActivity {
         for (String skill : selectedSkills) {
             TextView skillView = new TextView(this);
             skillView.setText(skill);
+            skillView.setTextColor(Color.BLACK);
             skillView.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             ));
             skillsContainer.addView(skillView);
-
-        // Fetch and display user details
-        fetchUserData();
-    }
-
-    private void fetchUserData() {
-        String userId = "USER_ID"; // Replace with the actual user ID logic
-        db.collection("students").document(userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        DocumentSnapshot document = task.getResult();
-                        displayUserDetails(document);
-                    }
-                });
-    }
-
-    private void displayUserDetails(DocumentSnapshot document) {
-        String name = document.getString("name");
-        String university = document.getString("university");
-        List<String> skills = (List<String>) document.get("skills");
-
-        // Set user name and university
-        TextView studentName = findViewById(R.id.studentName);
-        TextView studentUniversity = findViewById(R.id.studentUniversity);
-        studentName.setText(name != null ? name : "Unknown");
-        studentUniversity.setText(university != null ? university : "Unknown");
-
-        // Display skills
-        if (skills != null) {
-            for (String skill : skills) {
-                addSkillToContainer(skill);
-            }
-        } else {
-            addSkillToContainer("No skills available");
         }
     }
 
-        // Handle edit skills
-        editSkillsButton.setOnClickListener(v -> {
-            // Logic to open a skill editing dialog or screen
-        });
-    private void addSkillToContainer(String skill) {
-        TextView skillTextView = new TextView(this);
-        skillTextView.setText(skill);
-        skillTextView.setTextSize(14);
-        skillTextView.setTextColor(getColor(R.color.black));
-//        skillTextView.setBackground(getDrawable(R.drawable.skill_background)); // Optional, for a styled background
-        skillTextView.setPadding(16, 8, 16, 8);
-        skillTextView.setGravity(Gravity.CENTER);
-        skillTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-
-        skillsContainer.addView(skillTextView);
     private void showSkillEditingDialog(String userId) {
         LinearLayout dialogLayout = new LinearLayout(this);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);

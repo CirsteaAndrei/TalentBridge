@@ -180,6 +180,8 @@ public class StatisticsActivity extends AppCompatActivity {
             TextView skillTitle = new TextView(this);
             skillTitle.setText(String.format("Skill: %s", skill));
             skillTitle.setTextSize(16);
+            skillTitle.setTextColor(Color.BLACKil
+            );
             skillTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             chartContainer.addView(skillTitle);
 
