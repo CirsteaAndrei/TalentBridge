@@ -1,87 +1,175 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="16dp">
+    android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/headerSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/blue_500"
+        android:elevation="4dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
 
-        <!-- Profile Card -->
-        <com.google.android.material.card.MaterialCardView
+        <TextView
+            android:id="@+id/dashboardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="Profile"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/contentScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerSection"
+        android:layout_above="@id/bottomNavigation"
+        android:padding="16dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/light_gray"
-            android:layout_marginBottom="16dp"
-            android:padding="16dp">
+            android:orientation="vertical">
+
+            <!-- Profile Header Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- User Photo -->
+                <ImageView
+                    android:id="@+id/userPhoto"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="User Photo"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/default_profile_image" />
+
+                <!-- Personal Info -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Name -->
+                    <TextView
+                        android:id="@+id/studentName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="John Doe"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <!-- Email -->
+                    <TextView
+                        android:id="@+id/studentEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="john.doe@example.com"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp" />
+
+                    <!-- University -->
+                    <TextView
+                        android:id="@+id/studentUniversity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="University of Innovation"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp" />
+
+                    <!-- Faculty -->
+                    <TextView
+                        android:id="@+id/studentFaculty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Faculty of Science"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Skills Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:text="Skills"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/skillsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp" />
+
+            <!-- Edit Skills Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/editSkillsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/blue_500"
+                android:text="Edit Skills"
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:background="@color/white"
-                >
+                android:orientation="horizontal"
+                android:paddingTop="300dp"
+                android:paddingBottom="20dp"
+                android:gravity="center_horizontal">
 
-                <!-- Student Name -->
-                <TextView
-                    android:id="@+id/studentName"
+                <!-- Log Out Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logOutButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="John Doe"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/black"
-                    android:gravity="center" />
+                    android:layout_marginRight="8dp"
+                    android:backgroundTint="@color/blue_500"
+                    android:text="Log Out"
+                    android:textColor="@color/white" />
 
-                <!-- University -->
-                <TextView
-                    android:id="@+id/studentUniversity"
+                <!-- Delete Account Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/deleteAccountButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="University of Innovation"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center" />
+                    android:backgroundTint="@color/red"
+                    android:text="Delete Account"
+                    android:textColor="@color/white" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
 
-        <!-- Skills Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Skills"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:paddingBottom="8dp" />
-
-        <LinearLayout
-            android:id="@+id/skillsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="16dp"
-            />
-
-        <!-- Edit Skills Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/editSkillsButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Skills"
-            android:backgroundTint="@color/blue_500"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
-
-    </LinearLayout>
-</ScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        app:itemIconTint="@color/gray"
+        app:itemTextColor="@color/gray"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
+</RelativeLayout>

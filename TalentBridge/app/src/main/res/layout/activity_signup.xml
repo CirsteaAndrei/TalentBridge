@@ -1,16 +1,18 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal">
+
 
         <!-- Welcome Text -->
         <TextView
@@ -34,122 +36,270 @@
             android:layout_gravity="center"
             android:layout_marginBottom="16dp" />
 
-        <!-- Full Name Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
+        <!-- Role Selection -->
+        <RadioGroup
+            android:id="@+id/accountTypeRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintTextColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:hint="Full Name"
-            android:textColorHint="@color/black">
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fullNameField"
-                android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/studentRadioButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:background="@color/light_gray"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="Student"
+                android:textColor="@color/black"
+                android:checked="true" />
 
-        <!-- Email Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
+            <RadioButton
+                android:id="@+id/companyRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Company"
+                android:textColor="@color/black"
+                />
+        </RadioGroup>
+
+        <!-- Student Form -->
+        <LinearLayout
+            android:id="@+id/studentForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintTextColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:hint="Email"
-            android:textColorHint="@color/black">
+            android:orientation="vertical"
+            android:visibility="visible">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/emailField"
+            <!-- Full Name Field -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:background="@color/light_gray"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Full Name"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
 
-        <!-- Password Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fullNameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Password Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Skills Dropdown Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Spinner Dropdown -->
+                <Spinner
+                    android:id="@+id/skillsDropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/spinner_background"
+                    android:padding="8dp"
+                    android:spinnerMode="dropdown"
+                    />
+
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="8dp"
+                    android:background="@drawable/skill_container_bg">
+
+                    <LinearLayout
+                        android:id="@+id/selectedSkillsContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="start" />
+                </HorizontalScrollView>
+
+
+
+            </LinearLayout>
+
+
+
+            <!-- University Input Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="University"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/universityField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Faculty Input Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Faculty"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/facultyField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Company Form -->
+        <LinearLayout
+            android:id="@+id/companyForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintTextColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:hint="Password"
-            android:textColorHint="@color/black">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/passwordField"
+            <!-- Company Name Field -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:background="@color/light_gray"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Company Name"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
 
-        <!-- Skills Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:hint="Skills (comma-separated)"
-            android:textColorHint="@color/black">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/companyNameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/skillsField"
+            <!-- Email Field -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:background="@color/light_gray"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Email"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
 
-        <!-- University Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:hint="University"
-            android:textColorHint="@color/black">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/companyEmailField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/universityField"
+            <!-- Password Field -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:background="@color/light_gray"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Password"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
 
-        <!-- Faculty Input Field -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/black"
-            android:layout_marginBottom="16dp"
-            android:hint="Faculty"
-            android:textColorHint="@color/black">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/companyPasswordField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/facultyField"
+            <!-- Description Field -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:background="@color/light_gray"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Description"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
 
-        <!-- Sign Up Button -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Location Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Location"
+                android:textColorHint="@color/black"
+                android:layout_marginBottom="12dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/locationField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_gray"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/signupButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="Sign up"
             android:backgroundTint="@color/blue_500"
             android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="16dp" />
     </LinearLayout>
 </ScrollView>

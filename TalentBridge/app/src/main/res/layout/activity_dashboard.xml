@@ -1,40 +1,72 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <!-- Header Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/blue_500"
+        android:elevation="4dp"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@color/blue_500">
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp">
 
         <TextView
             android:id="@+id/dashboardTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:text="Job Dashboard"
-            android:textSize="20sp"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:layout_gravity="center_vertical" />
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
         <ImageButton
             android:id="@+id/statisticsButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginLeft="180dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/stats_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end|bottom"
+            android:background="@android:color/transparent"
             android:contentDescription="Statistics"
-            app:tint="@color/white"
-            android:scaleType="centerInside" />
-
+            android:scaleType="centerInside"
+            android:src="@drawable/statistics_icon" />
     </LinearLayout>
+
+    <!-- Navigation Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/jobsButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:text="Jobs"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/appliedButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button_applied"
+            android:text="Applied"
+            android:textColor="@color/blue_500"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 
     <!-- RecyclerView for Job Listings -->
     <androidx.recyclerview.widget.RecyclerView
@@ -42,16 +74,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp" />
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp" />
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/bottom_nav_menu"
-        app:labelVisibilityMode="labeled"
+        android:background="@color/white"
         app:itemIconTint="@color/gray"
+        app:itemRippleColor="@color/blue_500"
         app:itemTextColor="@color/gray"
-        android:background="@color/white" />
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
 </LinearLayout>

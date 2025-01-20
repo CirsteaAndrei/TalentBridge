@@ -30,5 +30,8 @@
         <activity android:name=".SignupActivity" android:theme="@style/Theme.TalentBridge" />
         <activity android:name=".JobDetailsActivity"/>
         <activity android:name=".StatisticsActivity" />
+        <activity android:name=".CompanyDashboardActivity" />
+        <activity android:name=".AddJobActivity" />
+        <activity android:name=".CompanyProfileActivity"/>
     </application>
 </manifest>

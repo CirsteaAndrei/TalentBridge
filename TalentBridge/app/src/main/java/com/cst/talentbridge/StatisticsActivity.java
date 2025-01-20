@@ -3,10 +3,8 @@ package com.cst.talentbridge;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,7 +19,7 @@ import java.util.Map;
 public class StatisticsActivity extends AppCompatActivity {
 
     private static final String TAG = "StatisticsActivity";
-    private LinearLayout pieChartContainer; // LinearLayout to hold multiple PieChartViews
+    private LinearLayout barChartContainer; // LinearLayout to hold bar charts
     private FirebaseFirestore db;
 
     @Override
@@ -29,72 +27,12 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
-        // Ensure the container layout matches your XML ID
-        pieChartContainer = findViewById(R.id.pieChartContainer);
+        barChartContainer = findViewById(R.id.barChartContainer);
 
         db = FirebaseFirestore.getInstance();
 
-        // Add the legend to the top
-        addLegend();
-
-        // Fetch skills data
+        // Fetch data for statistics
         fetchSkillsData();
-    }
-
-    private void addLegend() {
-        // Create a horizontal layout for the legend
-        LinearLayout legendLayout = new LinearLayout(this);
-        legendLayout.setOrientation(LinearLayout.HORIZONTAL);
-        legendLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        legendLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-        legendLayout.setPadding(0, 16, 0, 16);
-
-        // Add "Students" color box and label
-        LinearLayout studentLegend = createLegendItem("Students", getColor(R.color.blue_500));
-        legendLayout.addView(studentLegend);
-
-        // Add space between legends
-        TextView spacer = new TextView(this);
-        spacer.setText("     "); // Add some spacing
-        legendLayout.addView(spacer);
-
-        // Add "Jobs" color box and label
-        LinearLayout jobLegend = createLegendItem("Jobs", getColor(R.color.black));
-        legendLayout.addView(jobLegend);
-
-        // Add the legend layout to the container
-        pieChartContainer.addView(legendLayout);
-    }
-
-    private LinearLayout createLegendItem(String label, int color) {
-        LinearLayout legendItem = new LinearLayout(this);
-        legendItem.setOrientation(LinearLayout.HORIZONTAL);
-        legendItem.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-
-        // Color box
-        TextView colorBox = new TextView(this);
-        colorBox.setBackgroundColor(color);
-        colorBox.setLayoutParams(new LinearLayout.LayoutParams(40, 40));
-        colorBox.setPadding(8, 8, 8, 8);
-
-        // Label
-        TextView legendLabel = new TextView(this);
-        legendLabel.setText(label);
-        legendLabel.setTextSize(16);
-        legendLabel.setTextColor(Color.BLACK);
-        legendLabel.setPadding(16, 0, 0, 0);
-
-        // Add color box and label to the legend item
-        legendItem.addView(colorBox);
-        legendItem.addView(legendLabel);
-
-        return legendItem;
     }
 
     private void fetchSkillsData() {
@@ -127,8 +65,8 @@ public class StatisticsActivity extends AppCompatActivity {
                                             }
                                         }
 
-                                        // Process the skills data and update the charts
-                                        generatePieChartsForSkills(studentSkillsCount, jobSkillsCount);
+                                        // Generate bar charts
+                                        generateBarCharts(studentSkillsCount, jobSkillsCount);
                                     } else {
                                         Log.e(TAG, "Error fetching jobs data", jobTask.getException());
                                     }
@@ -139,79 +77,34 @@ public class StatisticsActivity extends AppCompatActivity {
                 });
     }
 
-    private void generatePieChartsForSkills(Map<String, Integer> studentSkillsCount, Map<String, Integer> jobSkillsCount) {
-        Map<String, Integer> combinedSkills = new HashMap<>(studentSkillsCount);
-        for (Map.Entry<String, Integer> entry : jobSkillsCount.entrySet()) {
-            combinedSkills.putIfAbsent(entry.getKey(), 0);
-        }
+    private void generateBarCharts(Map<String, Integer> studentSkillsCount, Map<String, Integer> jobSkillsCount) {
+        barChartContainer.removeAllViews();
 
-        LinearLayout pieChartContainer = findViewById(R.id.pieChartContainer);
-        LinearLayout currentRow = null;
-        int itemCount = 0;
-
-        for (String skill : combinedSkills.keySet()) {
+        for (String skill : studentSkillsCount.keySet()) {
             int studentsWithSkill = studentSkillsCount.getOrDefault(skill, 0);
             int jobsWithSkill = jobSkillsCount.getOrDefault(skill, 0);
 
+            // Skip if both counts are zero
             if (studentsWithSkill == 0 && jobsWithSkill == 0) continue;
 
-            if (itemCount % 2 == 0) {
-                // Create a new horizontal row for every 2 items
-                currentRow = new LinearLayout(this);
-                currentRow.setOrientation(LinearLayout.HORIZONTAL);
-                currentRow.setLayoutParams(new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
-                pieChartContainer.addView(currentRow);
-            }
-
-            // Create a container for each pie chart
-            LinearLayout chartContainer = new LinearLayout(this);
-            chartContainer.setOrientation(LinearLayout.VERTICAL);
-            chartContainer.setLayoutParams(new LinearLayout.LayoutParams(
-                    0,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    1 // Weight to distribute evenly
-            ));
-            chartContainer.setPadding(8, 8, 8, 8);
-
-            // Add title for the skill
+            // Add Skill Title
             TextView skillTitle = new TextView(this);
-            skillTitle.setText(String.format("Skill: %s", skill));
-            skillTitle.setTextSize(16);
-            skillTitle.setTextColor(Color.BLACKil
-            );
+            skillTitle.setText(skill);
+            skillTitle.setTextSize(20);
+            skillTitle.setTextColor(Color.BLACK);
+            skillTitle.setPadding(0, 20, 0, 10);
             skillTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            chartContainer.addView(skillTitle);
+            barChartContainer.addView(skillTitle);
 
-            // Add a label for the legend above the chart
-            TextView legendLabel = new TextView(this);
-            legendLabel.setTextSize(14);
-            legendLabel.setTextColor(getColor(R.color.gray));
-            legendLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            chartContainer.addView(legendLabel);
-
-            // Create PieChartView
-            PieChartView pieChartView = new PieChartView(this);
-            pieChartView.setLayoutParams(new LinearLayout.LayoutParams(
+            // Add Bar Chart View
+            CustomBarChartView barChartView = new CustomBarChartView(this);
+            barChartView.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     400
             ));
-            pieChartView.setData(
-                    new float[]{studentsWithSkill, jobsWithSkill},
-                    new int[]{getColor(R.color.blue_500), getColor(R.color.gray)},
-                    new String[]{"Students("+ studentsWithSkill + ")", "Jobs(" + jobsWithSkill + ")"}
-            );
-            chartContainer.addView(pieChartView);
-
-            // Add chart container to the current row
-            if (currentRow != null) currentRow.addView(chartContainer);
-
-            itemCount++;
+            barChartView.setData(studentsWithSkill, jobsWithSkill);
+            barChartContainer.addView(barChartView);
         }
     }
-
-
 
 }

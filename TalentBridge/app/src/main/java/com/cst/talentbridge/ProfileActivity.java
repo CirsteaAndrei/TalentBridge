@@ -3,10 +3,10 @@ package com.cst.talentbridge;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,18 +14,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
 
-    private TextView studentName;
+    private TextView studentName, studentEmail, studentUniversity, studentFaculty;
+    private ImageView profileImage;
     private LinearLayout skillsContainer;
     private Button editSkillsButton;
     private FirebaseFirestore db;
@@ -38,34 +39,137 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        // Initialize views
+        profileImage = findViewById(R.id.userPhoto);
         studentName = findViewById(R.id.studentName);
+        studentEmail = findViewById(R.id.studentEmail);
+        studentUniversity = findViewById(R.id.studentUniversity);
+        studentFaculty = findViewById(R.id.studentFaculty);
         skillsContainer = findViewById(R.id.skillsContainer);
         editSkillsButton = findViewById(R.id.editSkillsButton);
 
+        // Initialize buttons
+        MaterialButton logOutButton = findViewById(R.id.logOutButton);
+        MaterialButton deleteAccountButton = findViewById(R.id.deleteAccountButton);
+
+        // Set default profile photo
+        profileImage.setImageResource(R.drawable.default_profile_image);
+
         db = FirebaseFirestore.getInstance();
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_dashboard) {
+                redirectToDashboard();
+                return true;
+            } else if (item.getItemId() == R.id.nav_profile) {
+                return true;
+            }
+            return false;
+        });
+
         // Get current user's ID from Firebase Auth
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String studentId = getIntent().getStringExtra("studentId");
+        if (studentId == null) {
+            studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
 
         // Load profile data from Firestore
-        loadProfileData(userId);
+        loadProfileData(studentId);
 
         // Load predefined skills from Firestore
         loadSkillsFromFirestore();
 
         // Edit skills button click
-        editSkillsButton.setOnClickListener(v -> showSkillEditingDialog(userId));
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (!studentId.equals(currentUserId)) {
+            editSkillsButton.setVisibility(android.view.View.GONE);
+        } else {
+            // Edit skills button click
+            String finalStudentId = studentId;
+            editSkillsButton.setOnClickListener(v -> showSkillEditingDialog(finalStudentId));
+        }
+
+        // Log Out button functionality
+        logOutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        // Delete Account button functionality
+        deleteAccountButton.setOnClickListener(v -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String userId = auth.getCurrentUser().getUid();
+
+            // Confirm before deleting the account
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Delete Account")
+                    .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        // Delete user from Firestore
+                        db.collection("students").document(userId)
+                                .delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    // Delete user from FirebaseAuth
+                                    auth.getCurrentUser().delete()
+                                            .addOnSuccessListener(aVoid1 -> {
+                                                Toast.makeText(this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(this, "Failed to delete account from FirebaseAuth", Toast.LENGTH_SHORT).show();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Failed to delete account from Firestore", Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        });
     }
+
+
+    private void redirectToDashboard() {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("companies").document(currentUserId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // User is a company
+                        startActivity(new Intent(ProfileActivity.this, CompanyDashboardActivity.class));
+                    } else {
+                        // User is a student
+                        startActivity(new Intent(ProfileActivity.this, DashboardActivity.class));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(ProfileActivity.this, "Error determining user role", Toast.LENGTH_SHORT).show();
+                    // Fallback to the student dashboard
+                    startActivity(new Intent(ProfileActivity.this, DashboardActivity.class));
+                });
+    }
+
     private void loadProfileData(String userId) {
         db.collection("students").document(userId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // Retrieve and display student data
                 String name = documentSnapshot.getString("name");
+                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                String university = documentSnapshot.getString("university");
+                String faculty = documentSnapshot.getString("faculty");
                 List<String> skills = (List<String>) documentSnapshot.get("skills");
 
-                if (name != null) {
-                    studentName.setText(name);
-                }
+                if (name != null) studentName.setText(name);
+                if (email != null) studentEmail.setText(email);
+                if (university != null) studentUniversity.setText(university);
+                if (faculty != null) studentFaculty.setText(faculty);
 
                 if (skills != null) {
                     selectedSkills.clear();
@@ -77,9 +181,9 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
-            Log.e("ProfileActivity", "Error loading profile", e);
         });
     }
+
     private void loadSkillsFromFirestore() {
         db.collection("skills").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -91,8 +195,6 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
                 displaySkills(); // Display user's skills after loading predefined skills
-            } else {
-                Log.w(TAG, "Error fetching skills", task.getException());
             }
         });
     }
@@ -144,7 +246,6 @@ public class ProfileActivity extends AppCompatActivity {
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(this, "Failed to update skills", Toast.LENGTH_SHORT).show();
-                                Log.e("ProfileActivity", "Error updating skills", e);
                             });
                 })
                 .setNegativeButton("Cancel", null)

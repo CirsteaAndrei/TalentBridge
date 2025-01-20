@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -44,9 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                            finish();
+                            checkUserRole(); // New method to check if the user is a company or a regular user
                         } else {
                             Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -58,5 +58,26 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void checkUserRole() {
+        String userId = auth.getCurrentUser().getUid();
+
+        FirebaseFirestore.getInstance().collection("companies")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Redirect to Company Dashboard
+                        startActivity(new Intent(LoginActivity.this, CompanyDashboardActivity.class));
+                    } else {
+                        // Redirect to User Dashboard
+                        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                    }
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(LoginActivity.this, "Error checking user role: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

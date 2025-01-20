@@ -1,0 +1,28 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/skill_chip_background"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/skillName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skill"
+        android:textSize="14sp"
+        android:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/removeSkillButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_close"
+        android:contentDescription="Remove Skill"
+        app:tint="@color/red" />
+</LinearLayout>

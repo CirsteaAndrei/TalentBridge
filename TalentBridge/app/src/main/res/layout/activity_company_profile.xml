@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="Job Details"
+            android:text="Company Profile"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -30,100 +30,114 @@
 
     <!-- Content Section -->
     <ScrollView
-        android:id="@+id/contentScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/headerSection"
-        android:layout_above="@id/bottomNavigation"
         android:padding="16dp"
-        android:background="@color/white">
+        android:layout_below="@id/headerSection"
+        android:layout_above="@id/bottomNavigation">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Job Title -->
+            <!-- Company Name -->
             <TextView
-                android:id="@+id/jobTitle"
+                android:id="@+id/companyName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Job Title"
+                android:text="Company Name"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:paddingBottom="16dp"
                 android:textColor="@color/black" />
 
-            <!-- Job Description -->
+            <!-- Company Description -->
             <TextView
-                android:id="@+id/jobDescriptionLabel"
+                android:id="@+id/companyDescriptionLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Job Description:"
+                android:text="Description:"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/jobDescription"
+                android:id="@+id/companyDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="This is the job description."
+                android:text="This is a detailed description of the company."
                 android:textSize="16sp"
                 android:paddingBottom="16dp"
                 android:textColor="@color/gray" />
 
-            <!-- Required Skills -->
+            <!-- Company Email -->
             <TextView
-                android:id="@+id/jobRequiredSkillsLabel"
+                android:id="@+id/companyEmailLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Required Skills:"
+                android:text="Email:"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/jobRequiredSkills"
+                android:id="@+id/companyEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Skills required for this job."
+                android:text="example@company.com"
+                android:textSize="16sp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/blue_500" />
+
+            <!-- Company Location -->
+            <TextView
+                android:id="@+id/companyLocationLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/companyLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="City, Country"
                 android:textSize="16sp"
                 android:paddingBottom="16dp"
                 android:textColor="@color/gray" />
-
-            <!-- Apply Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/applyButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Apply Now"
-                android:backgroundTint="@color/blue_500"
-                android:textColor="@color/white"
-                android:layout_marginTop="16dp"
-                android:visibility="gone" />
-
-            <!-- List of Applicants -->
-            <TextView
-                android:id="@+id/applicantsLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Applicants:"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:textColor="@color/black"
-                android:visibility="gone" />
-
             <LinearLayout
-                android:id="@+id/applicantsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:paddingTop="280dp"
+                android:paddingBottom="20dp"
+                android:gravity="center_horizontal">
+
+                <!-- Log Out Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logOutButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:backgroundTint="@color/blue_500"
+                    android:text="Log Out"
+                    android:textColor="@color/white" />
+
+                <!-- Delete Account Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/deleteAccountButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/red"
+                    android:text="Delete Account"
+                    android:textColor="@color/white" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

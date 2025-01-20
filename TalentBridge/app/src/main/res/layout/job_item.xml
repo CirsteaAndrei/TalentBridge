@@ -9,49 +9,56 @@
     app:strokeWidth="1dp"
     app:strokeColor="@color/light_gray"
     android:clickable="true"
-    android:focusable="true"> <!-- Ensure the card view is focusable and clickable -->
+    android:focusable="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:padding="16dp"
         android:background="@color/light_gray">
 
         <!-- Job Title -->
         <TextView
             android:id="@+id/jobTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Job Title"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:paddingBottom="8dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:paddingBottom="8dp" />
 
-        <!-- Job Description -->
+        <!-- Company Name -->
         <TextView
-            android:id="@+id/jobDescription"
-            android:layout_width="match_parent"
+            android:id="@+id/jobCompany"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="This is a detailed description of the job position, highlighting the responsibilities and expectations."
+            android:layout_below="@id/jobTitle"
+            android:text="Company Name"
             android:textSize="14sp"
             android:textColor="@color/gray"
-            android:paddingBottom="8dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:paddingBottom="8dp" />
 
         <!-- Required Skills -->
         <TextView
             android:id="@+id/jobRequiredSkills"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/jobCompany"
             android:text="Java, Android, Kotlin"
             android:textSize="14sp"
-            android:textColor="@color/gray"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
-    </LinearLayout>
+            android:textColor="@color/gray" />
+
+        <!-- Delete Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteJobButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/blue_500"
+            android:background="@drawable/delete_job_icon"
+            app:backgroundTint="@color/red"
+            android:visibility= "gone"/>
+    </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

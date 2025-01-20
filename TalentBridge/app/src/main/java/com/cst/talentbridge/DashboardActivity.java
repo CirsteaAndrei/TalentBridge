@@ -3,6 +3,7 @@ package com.cst.talentbridge;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,8 +34,12 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        // Initialize UI elements
+        Button jobsButton = findViewById(R.id.jobsButton);
+        Button appliedButton = findViewById(R.id.appliedButton);
+        recyclerView = findViewById(R.id.recyclerView);
 
-        // Initialize Bottom Navigation
+//         Initialize Bottom Navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_dashboard) {
@@ -45,34 +50,47 @@ public class DashboardActivity extends AppCompatActivity {
             }
             return false;
         });
+
         ImageButton statisticsButton = findViewById(R.id.statisticsButton);
         statisticsButton.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardActivity.this, StatisticsActivity.class);
             startActivity(intent);
         });
 
-        // Initialize RecyclerView
-        recyclerView = findViewById(R.id.recyclerView);
+        // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        jobAdapter = new JobAdapter(this, jobList);
+        jobAdapter = new JobAdapter(this, jobList, false, null);
         recyclerView.setAdapter(jobAdapter);
 
         db = FirebaseFirestore.getInstance();
 
+        // Default View: Show Available Jobs
         fetchStudentSkillsAndFilterJobs();
+        setButtonStyle(jobsButton, appliedButton);
 
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_dashboard) {
-                return true;
-            } else if (item.getItemId() == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-            }
-            return false;
+        // Handle button clicks for "Jobs" and "Applied"
+        jobsButton.setOnClickListener(v -> {
+            setButtonStyle(jobsButton, appliedButton);
+            fetchStudentSkillsAndFilterJobs(); // Show available jobs
         });
 
+        appliedButton.setOnClickListener(v -> {
+            setButtonStyle(appliedButton, jobsButton);
+            fetchAppliedJobs(); // Show applied jobs
+        });
     }
+
+    // Helper method to set button styles
+    private void setButtonStyle(Button selectedButton, Button unselectedButton) {
+        selectedButton.setBackgroundResource(R.drawable.button_filled);
+        selectedButton.setTextColor(getResources().getColor(android.R.color.white));
+
+        unselectedButton.setBackgroundResource(R.drawable.button_outline);
+        unselectedButton.setTextColor(getResources().getColor(R.color.blue_700));
+    }
+
+
 
     private void seedJobsAndSkillsToFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -143,41 +161,98 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        jobList.clear();
-        // Reload data when returning from ProfileActivity
-        fetchStudentSkillsAndFilterJobs();
+        // Only refresh jobs when necessary
+        if (recyclerView.getAdapter() == null) {
+            fetchStudentSkillsAndFilterJobs();
+        }
     }
+
     private void fetchStudentSkillsAndFilterJobs() {
         // Get current user's ID from FirebaseAuth
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Fetch student's skills
-        db.collection("students").document(userId).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                List<String> studentSkills = (List<String>) documentSnapshot.get("skills");
+        // Fetch student's applied jobs first
+        db.collection("students").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Get the list of applied jobs
+                        List<String> appliedJobs = (List<String>) documentSnapshot.get("applied_jobs");
+                        if (appliedJobs == null) {
+                            appliedJobs = new ArrayList<>();
+                        }
 
-                if (studentSkills != null) {
-                    Log.d(TAG, "Student skills: " + studentSkills);
-                    fetchJobsAndFilter(studentSkills);
-                } else {
-                    Log.w(TAG, "No skills found for the student");
+                        // Fetch student's skills
+                        List<String> studentSkills = (List<String>) documentSnapshot.get("skills");
+                        if (studentSkills != null) {
+                            Log.d(TAG, "Student skills: " + studentSkills);
+                            fetchJobsAndFilter(studentSkills, appliedJobs); // Pass applied jobs
+                        } else {
+                            Log.w(TAG, "No skills found for the student");
+                        }
+                    } else {
+                        Log.w(TAG, "Student profile not found");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching student profile", e);
+                });
+    }
+
+    // Fetch only applied jobs for the student
+    private void fetchAppliedJobs() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("students").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> appliedJobs = (List<String>) documentSnapshot.get("applied_jobs");
+                        if (appliedJobs != null && !appliedJobs.isEmpty()) {
+                            fetchJobsByIds(appliedJobs);
+                        } else {
+                            jobList.clear();
+                            jobAdapter.notifyDataSetChanged(); // Show empty list
+                            Log.w(TAG, "No applied jobs found");
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error fetching applied jobs", e));
+    }
+
+    // Fetch jobs by their IDs (used for applied jobs)
+    private void fetchJobsByIds(List<String> jobIds) {
+        db.collection("jobs").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                jobList.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String jobId = document.getId();
+                    if (jobIds.contains(jobId)) {
+                        String title = document.getString("title");
+                        String description = document.getString("description");
+                        String companyId = document.getString("company_id");
+                        List<String> requiredSkills = (List<String>) document.get("requiredSkills");
+
+                        if (title != null && description != null && requiredSkills != null) {
+                            jobList.add(new Job(jobId, title, description, requiredSkills, companyId));
+                        }
+                    }
                 }
+                jobAdapter.notifyDataSetChanged(); // Refresh RecyclerView
             } else {
-                Log.w(TAG, "Student profile not found");
+                Log.w(TAG, "Error fetching jobs", task.getException());
             }
-        }).addOnFailureListener(e -> {
-            Log.e(TAG, "Error fetching student profile", e);
         });
     }
 
-    private void fetchJobsAndFilter(List<String> studentSkills) {
+    private void fetchJobsAndFilter(List<String> studentSkills, List<String> appliedJobs) {
         // Fetch jobs from Firestore
         db.collection("jobs").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 jobList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
+                    String jobId = document.getId();
                     String title = document.getString("title");
                     String description = document.getString("description");
+                    String companyId = document.getString("company_id");
                     List<String> requiredSkills = (List<String>) document.get("requiredSkills");
 
                     if (title != null && description != null && requiredSkills != null) {
@@ -189,8 +264,10 @@ public class DashboardActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        if (matches) {
-                            jobList.add(new Job(title, description, requiredSkills));
+
+                        // Add job only if it matches skills and is NOT applied
+                        if (matches && !appliedJobs.contains(jobId)) {
+                            jobList.add(new Job(jobId, title, description, requiredSkills, companyId));
                         }
                     }
                 }
@@ -200,5 +277,26 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            String appliedJobId = data.getStringExtra("jobId");
+
+            // Safely remove the applied job from the list
+            if (jobList != null) {
+                jobList.removeIf(job -> job.getId().equals(appliedJobId));
+                if (jobAdapter != null) {
+                    jobAdapter.notifyDataSetChanged();
+                }
+            }
+        }
+    }
+
+
+
 
 }
